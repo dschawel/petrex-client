@@ -28,34 +28,35 @@ const Signup = props => {
       password,
       profileUrl
     }
-  
+
     // Send the user sign up data to the server
     console.log(process.env.REACT_APP_SERVER_URL)
     fetch(`${process.env.REACT_APP_SERVER_URL}/auth/signup`, { //REACT automatically handles .env files dont need to require 'dotenv'
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
       }
     })
-    .then(response => {
-      response.json().then(result => {
-        if (response.ok) { // ok = built in property to response; boolean value
-          //I have a token - update the user info
-          props.updateUser(result.token)
-        }
-        else {
-          //Status was something other than 200
-          setMessage(`${response.status} ${response.statusText}: ${result.message}`)
-        }
+      .then(response => {
+        response.json().then(result => {
+          if (response.ok) { // ok = built in property to response; boolean value
+            //I have a token - update the user info
+            props.updateUser(result.token)
+          }
+          else {
+            //Status was something other than 200
+            setMessage(`${response.status} ${response.statusText}: ${result.message}`)
+          }
+        })
       })
-    })
-    .catch(err => {
-      setMessage(`Error: ${err.toString()}`)
-    })
+      .catch(err => {
+        setMessage(`Error: ${err.toString()}`)
+      })
   }
 
-  if(props.user) {
+  if (props.user) {
     return <Redirect to="/profile" /> // if user, we want to return the profile page, not the signup form
   }
 
